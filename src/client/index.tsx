@@ -1,13 +1,13 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
-import { IndicatorTable } from './src';
+import { Provider } from "react-redux";
+import App from './src/app';
+import { Store } from './src/redux';
 
-const HelloWorld = () => {
-  return (
-    <div>
-      <IndicatorTable/>
+ReactDOM.render(
+  <Provider store={Store}>
+    <div className='container-fluid d-flex flex-row'>
+      <App/>
     </div>
-  );
-}
-
-ReactDOM.render(<HelloWorld />, document.getElementById("root"));
+  </Provider>,
+  document.getElementById('root')
+);
