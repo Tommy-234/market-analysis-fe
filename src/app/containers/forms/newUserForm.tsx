@@ -1,13 +1,19 @@
 import { Button } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import axios from 'axios';
 import { GenericInput } from '../../components';
+import { newUser, useActions } from '../../redux';
+import { isEmpty } from 'lodash';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-let newUser = ( props ) => {
+let NewUser = ( props ) => {
   const { handleSubmit, pristine, submitting } = props;
+  const actions = useActions({ newUser });
+  const { newUserError } = useSelector( (store: any) => ({
+    newUserError: store.user.newUserError
+  }));
   return (
-    <form className='form-group' onSubmit={handleSubmit(newUserSubmit)}>
+    <form className='form-group' onSubmit={handleSubmit(actions.newUser)}>
       <div className="form-row">
         <label className="col-form-label">Username</label>
         <Field
@@ -29,6 +35,9 @@ let newUser = ( props ) => {
           component={GenericInput}
         />
       </div>
+      {!isEmpty(newUserError) && (
+        <p>New User Error</p>
+      )}
       <Button
         block
         type="submit"
@@ -40,24 +49,6 @@ let newUser = ( props ) => {
   );
 }
 
-const newUserSubmit = async ( values ) => {
-  const { username, password, email } = values;
-  const payload = {
-    username,
-    password,
-    email
-  }
-  axios.post('/api/newUser', payload)
-    .then( (res) => {
-      console.log(res.data);
-    })
-    .catch( (error) => {
-      console.log(error.response.data);
-    })
-  ;
-}
-
-
-export const newUserForm = reduxForm({
+export const NewUserForm = reduxForm({
   form: 'newUserForm',
-})(newUser);
+})(NewUser);

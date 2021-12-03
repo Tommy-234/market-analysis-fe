@@ -1,12 +1,12 @@
 import { Table } from 'react-bootstrap';
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
 import { map } from 'lodash';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const IndicatorTable = () => {
   const { tableData } = useSelector( (store: any) => ({
     tableData: store.tableData
-  }))
+  }));
   const columns = tableData.length > 0 ? Object.keys(tableData[0]) : [];
   return (
     <div className="container">
@@ -30,4 +30,4 @@ export const IndicatorTable = () => {
       </Table>
     </div>
   )
-}
+};
