@@ -3,7 +3,7 @@ import { map } from 'lodash';
 import { Button } from 'react-bootstrap';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux'
-import { GenericInput, GenericSelect } from './fields';
+import { GenericInput, GenericSelect } from '../../components';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const IntervalOptions = map(Object.keys(IntervalType), (interval: IntervalType) =>

@@ -1,10 +1,12 @@
 import { Table } from 'react-bootstrap';
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { map } from 'lodash';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-let IndicatorTable = ( props ) => {
-  const { tableData } = props;
+export const IndicatorTable = () => {
+  const { tableData } = useSelector( (store: any) => ({
+    tableData: store.tableData
+  }))
   const columns = tableData.length > 0 ? Object.keys(tableData[0]) : [];
   return (
     <div className="container">
@@ -29,11 +31,3 @@ let IndicatorTable = ( props ) => {
     </div>
   )
 }
-
-const mapStateToProps = state => ({
-  tableData: state.tableData
-});
-
-IndicatorTable = connect(mapStateToProps)(IndicatorTable);
-
-export default IndicatorTable;

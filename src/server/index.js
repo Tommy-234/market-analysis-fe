@@ -4,7 +4,6 @@ const path = require('path');
 
 const CLIENT_BUILD_PATH = path.join(__dirname, '../../build');
 const PUBLIC_PATH = path.join(__dirname, '../../public');
-
 const API_PROXY = 'http://localhost:3001';
 
 const app = express();

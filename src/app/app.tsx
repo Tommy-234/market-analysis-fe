@@ -5,9 +5,8 @@ import {
   IndicatorType
 } from '@tommy_234/live-data';
 import { binanceInit, tableDataUpdate } from './redux';
-import { connect } from 'react-redux'
-import IndicatorTable from './IndicatorTable';
-import { SidePanel } from './SidePanel';
+import { useDispatch } from 'react-redux';
+import { IndicatorTable, SidePanel } from './containers';
 import { useEffect } from 'react';
 import { map } from 'lodash';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,12 +22,18 @@ const config = {
   }
 }
 
-let App = ( props ) => {
-  const { binanceInit, onBinanceupdate } = props;
+let App = () => {
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const binanceAnalysis = new BinanceAnalysis({
-      onUpdate: (data: any) => onBinanceupdate(data),
+      onUpdate: (data: any) => dispatch(tableDataUpdate(
+        map(data, element =>  ({
+          stream: element.stream,
+          current: element.currentCandle.close,
+          ...element.indicators
+        }))
+      )),
       config
     });
     
@@ -40,7 +45,7 @@ let App = ( props ) => {
     binanceAnalysis.newStream('BTCUSDT', StreamType.KLINE, IntervalType.Hour1)
       .then( () => binanceAnalysis.resetStream());
 
-    binanceInit(binanceAnalysis);
+    dispatch(binanceInit(binanceAnalysis));
   }, [])
 
   return (
@@ -50,18 +55,5 @@ let App = ( props ) => {
     </div>
   );
 }
-
-const mapDispatchToProps = dispatch => ({
-  onBinanceupdate: (data) => dispatch(tableDataUpdate(
-    map(data, element =>  ({
-        stream: element.stream,
-        current: element.currentCandle.close,
-        ...element.indicators
-    }))
-  )),
-  binanceInit: ( ba: BinanceAnalysis ) => dispatch(binanceInit(ba))
-});
-
-App = connect(null, mapDispatchToProps)(App)
 
 export default App;

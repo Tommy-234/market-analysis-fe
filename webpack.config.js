@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const CLIENT_PATH = 'src/client';
+const CLIENT_PATH = 'src/app';
 
 module.exports = {
   entry: [

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Field, reduxForm } from 'redux-form';
 import { getSubscription } from '../../sw-register';
 import { connect } from 'react-redux'
-import { GenericInput, GenericSelect } from './fields';
+import { GenericInput, GenericSelect } from '../../components';
 import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -107,10 +107,7 @@ const notificationSubmit = async ( values ) => {
 }
 
 const mapStateToProps = state => {
-  console.log('NotificationForm - mapStateToProps');
-  console.log(state);
   const binanceAnalysis = state.binanceAnalysis;
-  console.log(binanceAnalysis);
   return {
     indicatorOptions:
       binanceAnalysis.streamManager ?
