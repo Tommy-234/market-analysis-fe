@@ -1,12 +1,15 @@
 import axios from 'axios';
 import { Dispatch } from 'redux';
 
-export const createNewUser = () => ( dispatch: Dispatch ) => {
-  console.log('createNewUser action - ENTER');
+export const createNewUser = () => ( dispatch: Dispatch ) => 
   dispatch({ type: 'CREATE_NEW_USER' });
-}
 
-export const userLogin = ( values: { username: string; password: string; }) => (
+export const userLogin = (
+  values: {
+    username: string;
+    password: string;
+  }
+) => (
   dispatch: Dispatch
 ): void => {
   dispatch({ type: 'USER_LOGIN_START' });

@@ -1,46 +1,45 @@
-import { Operator, GlobalIndicator, Stream } from '@tommy_234/live-data'
-import { map, concat } from 'lodash';
-import axios from 'axios';
+import { GlobalIndicator, Stream } from '@tommy_234/live-data';
+import { map, concat, get, isEmpty } from 'lodash';
 import { Field, reduxForm } from 'redux-form';
-import { getSubscription } from '../../sw-register';
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { GenericInput, GenericSelect } from '../../components';
+import { useActions, newNotification } from '../../redux';
+import { CandleFields, OperatorOptions } from '../../common';
 import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const candleFields = [
-  'close',
-  'open',
-  'volume',
-  'quoteAssetVolume',
-  'baseAssetBuyVolume',
-  'quoteAssetBuyVolume'
-];
-
 let NotificationFormRedux = ( props ) => {
   const { handleSubmit, pristine, submitting } = props;
-  const { indicatorOptions, streamOptions } = props;
+  const actions = useActions({ newNotification });
 
-  console.log('NotificationFormRedux - enter');
-  console.log(indicatorOptions, streamOptions);
-
-  const operatorOptions = map(Object.keys(Operator), (operator: Operator) =>
-    <option value={Operator[operator]}>
-      {Operator[operator]}
-    </option>
-  );
+  const { indicatorOptions, streamOptions } = useSelector( (store: any) => ({
+    indicatorOptions:
+      isEmpty(get(store, ['binance', 'manager', 'streamManager'])) ?
+        map(
+          store.binance.manager.streamManager.globalIndicators,
+          ( indicator: GlobalIndicator ) => `${indicator.type}_${indicator.count}`
+        )
+      : [],
+    streamOptions:
+      isEmpty(get(store, ['binance', 'manager', 'streamManager'])) ?
+        map(
+          store.binance.manager.streamManager.streams,
+          ( stream: Stream ) => stream.name
+        )
+      : [],
+  }));
 
   const dataPathOptions = concat(
     map( indicatorOptions, option => 
       <option value={`indicator.${option}`}>{option}</option>
     ),
-    map( candleFields, field =>
+    map( CandleFields, field =>
       <option value={`currentCandle.${field}`}>{field}</option>
     )
   );
 
   return (
-    <form className='form-group' onSubmit={handleSubmit(notificationSubmit)}>
+    <form className='form-group' onSubmit={handleSubmit(actions.newNotification)}>
       <div className="form-row">
         <label className="col-form-label">Stream</label>
         <Field
@@ -64,7 +63,7 @@ let NotificationFormRedux = ( props ) => {
         <Field
           name="operator"
           component={GenericSelect}
-          options={operatorOptions}
+          options={OperatorOptions}
         />
       </div>
       <div className="form-row">
@@ -84,49 +83,6 @@ let NotificationFormRedux = ( props ) => {
     </form>
   );
 }
-
-// const newNotification = async (dataPath: string, streamName: string, operator: Operator, targetValue: number) => {}
-const notificationSubmit = async ( values ) => {
-  const { dataPath, streamName, operator, targetValue } = values;
-  const subscription = await getSubscription();
-  const payload = {
-    streamName,
-    dataPath,
-    operator,
-    value: targetValue,
-    subscription
-  }
-  axios.post('/api/notification', payload)
-    .then( (res) => {
-      console.log(res.data);
-    })
-    .catch( (error) => {
-      console.log(error.response.data);
-    })
-  ;
-}
-
-const mapStateToProps = state => {
-  const binanceAnalysis = state.binanceAnalysis;
-  return {
-    indicatorOptions:
-      binanceAnalysis.streamManager ?
-        map(
-          binanceAnalysis.streamManager.globalIndicators,
-          ( indicator: GlobalIndicator ) => `${indicator.type}_${indicator.count}`
-        )
-      : [],
-    streamOptions:
-      binanceAnalysis.streamManager ?
-        map(
-          binanceAnalysis.streamManager.streams,
-          ( stream: Stream ) => stream.name
-        )
-      : [],
-  }
-};
-
-NotificationFormRedux = connect(mapStateToProps)(NotificationFormRedux);
 
 export const NotificationForm = reduxForm({
   form: 'notificationForm',
