@@ -14,14 +14,14 @@ let NotificationFormRedux = ( props ) => {
 
   const { indicatorOptions, streamOptions } = useSelector( (store: any) => ({
     indicatorOptions:
-      isEmpty(get(store, ['binance', 'manager', 'streamManager'])) ?
+      !isEmpty(get(store, ['binance', 'manager', 'streamManager'])) ?
         map(
           store.binance.manager.streamManager.globalIndicators,
           ( indicator: GlobalIndicator ) => `${indicator.type}_${indicator.count}`
         )
       : [],
     streamOptions:
-      isEmpty(get(store, ['binance', 'manager', 'streamManager'])) ?
+      !isEmpty(get(store, ['binance', 'manager', 'streamManager'])) ?
         map(
           store.binance.manager.streamManager.streams,
           ( stream: Stream ) => stream.name

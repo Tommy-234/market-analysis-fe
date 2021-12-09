@@ -29,5 +29,5 @@ export const IndicatorTable = () => {
         </tbody>
       </Table>
     </div>
-  )
+  );
 };
