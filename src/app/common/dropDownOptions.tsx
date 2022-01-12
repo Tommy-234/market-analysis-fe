@@ -1,4 +1,4 @@
-import { IndicatorType, IntervalType, Operator } from '@tommy_234/live-data';
+import { IndicatorType, IntervalType, Operator, Info24Hour } from '@tommy_234/live-data';
 import { map } from 'lodash';
 
 export const IndicatorOptions = map(Object.keys(IndicatorType), (indicator: IndicatorType) =>

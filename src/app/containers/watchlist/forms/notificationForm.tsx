@@ -1,10 +1,10 @@
 import { GlobalIndicator, Stream } from '@tommy_234/live-data';
-import { map, concat, get, isEmpty } from 'lodash';
 import { Field, reduxForm } from 'redux-form';
 import { useSelector } from 'react-redux'
-import { GenericInput, GenericSelect } from '../../components';
-import { useActions, newNotification } from '../../redux';
-import { CandleFields, OperatorOptions } from '../../common';
+import { GenericInput, GenericSelect } from '../../../components';
+import { useActions, newNotification } from '../../../redux';
+import { CandleFields, OperatorOptions } from '../../../common';
+import { map, concat, get, isEmpty } from 'lodash';
 import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 

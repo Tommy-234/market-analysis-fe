@@ -1,4 +1,3 @@
-import React from 'react';
 
 export const GenericInput = (field) => (
   <div className="input-row">

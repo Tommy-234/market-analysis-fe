@@ -1,8 +1,8 @@
 import { Button } from 'react-bootstrap';
 import { Field, reduxForm } from 'redux-form';
-import { GenericInput, GenericSelect } from '../../components';
-import { IndicatorOptions } from '../../common';
-import { useActions, newBinanceIndicator } from '../../redux';
+import { GenericInput, GenericSelect } from '../../../components';
+import { IndicatorOptions } from '../../../common';
+import { useActions, newBinanceIndicator } from '../../../redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 

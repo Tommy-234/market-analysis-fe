@@ -6,9 +6,9 @@ import { Store } from './redux';
 
 ReactDOM.render(
   <Provider store={Store}>
-    <LoginWrapper>
+    {/* <LoginWrapper> */}
       <App />
-    </LoginWrapper>
+    {/* </LoginWrapper> */}
   </Provider>,
   document.getElementById('root')
 );

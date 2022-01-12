@@ -8,23 +8,6 @@ import { Dispatch } from 'redux';
 import { map } from 'lodash';
 import { BinanceConfig } from '../../common';
 
-export const BTCtickersInfo = () => async (
-  dispatch: Dispatch,
-  getState: () => any
-) => {
-  dispatch({ type: 'BINANCE_BTC_PAIRS_START' });
-  const binanceAnalysis: BinanceAnalysis = getState().binance.manager;
-  binanceAnalysis.apiClient.bitcoinPairings()
-    .then( (data) => dispatch({
-      type: 'BINANCE_BTC_PAIRS',
-      data
-    }))
-    .catch( error => dispatch({
-      type: 'BINANCE_BTC_PAIRS_ERROR',
-      data: error
-    }));
-}
-
 export const newBinanceIndicator = (
   values: {
     type: IndicatorType,
@@ -75,7 +58,6 @@ const mapBinanceStreamData = ( data: any ) =>
     current: element.currentCandle.close,
     ...element.indicators
   }));
-
 
 const binanceDummyData = ( binanceAnalysis: BinanceAnalysis ) => {
   binanceAnalysis.streamManager.newGlobalIndicator(IndicatorType.RSI, 14);
