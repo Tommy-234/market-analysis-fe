@@ -1,37 +1,46 @@
 import { useSelector } from 'react-redux'
 import { Button } from 'react-bootstrap';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, InjectedFormProps } from 'redux-form';
 import { GenericSelect } from '../../../components';
-import { useActions, addScannerColumn } from '../../../redux';
-import { filter, includes, map } from 'lodash';
+import { useActions, addRemoveScannerColumn } from '../../../redux';
+import { filter, includes, map, get } from 'lodash';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-let AddColumnFormRedux = (props) => {
-  const { handleSubmit, pristine, submitting } = props;
-  const actions = useActions({ addScannerColumn });
+let AddColumnFormRedux = (props: InjectedFormProps) => {
+  const { handleSubmit, pristine, submitting, form } = props;
+  const actions = useActions({ addRemoveScannerColumn });
 
-  const { scannerFields, btcPairs } = useSelector((store: any) => ({
-    btcPairs: store.binanceScanner.btcPairs.data,
-    scannerFields: store.binanceScanner.columns
+  const { scannerFields, tableData, addRemove } = useSelector((store: any) => ({
+    tableData: store.binanceScanner.tableData,
+    scannerFields: store.binanceScanner.columns,
+    addRemove: get(store.form[form], ['values', 'addRemove'], 'add')
   }));
 
-  const columns = btcPairs.length > 0 ? 
+  const columns = tableData.length > 0 && addRemove != 'remove' ? 
     filter(
-      Object.keys(btcPairs[0]),
+      Object.keys(tableData[0]),
       field => !includes(scannerFields, field))
-    : [];
+    : scannerFields;
+  
   const columnOptions = map(columns, columnOption => 
     <option value={columnOption}>
       {columnOption}
     </option>
-  )
-
-  console.log('AddColumnFormRedux - btcPairs.length = ', btcPairs.length);
-  console.log('AddColumnFormRedux - btcPairs keys = ', btcPairs.length > 0 && Object.keys(btcPairs[0]));
-  console.log('AddColumnFormRedux - columnOptions = ', columnOptions);
+  );
 
   return (
-    <form className='form-group' onSubmit={handleSubmit(actions.addScannerColumn)}>
+    <form className='form-group' onSubmit={handleSubmit(actions.addRemoveScannerColumn)}>
+      <div className='form-row'>
+        <label className="col-form-label">Add or Remove</label>
+        <Field
+          name="addRemove"
+          component={GenericSelect}
+          options={[
+            <option value='add'>Add</option>,
+            <option value='remove'>Remove</option>
+          ]}
+        />
+      </div>
       <div className='form-row'>
         <label className="col-form-label">Column</label>
         <Field

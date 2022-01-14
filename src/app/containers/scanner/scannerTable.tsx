@@ -3,8 +3,8 @@ import { DataTable } from '../../components';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const ScannerTable = () => {
-  const { btcPairs, fields } = useSelector( (store: any) => ({
-    btcPairs: store.binanceScanner.btcPairs.data,
+  const { tableData, fields } = useSelector( (store: any) => ({
+    tableData: store.binanceScanner.tableData,
     fields: store.binanceScanner.columns
   }));
 
@@ -12,7 +12,7 @@ export const ScannerTable = () => {
     <div className="container">
       <DataTable
         dataFields={fields}
-        tableData={btcPairs}
+        tableData={tableData}
       />
     </div>
   );

@@ -1,21 +1,21 @@
 import { Accordion, Card } from 'react-bootstrap';
-import { AddColumnForm } from './forms';
+import { AddColumnForm, ScannerFilterForm } from './forms';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const SidePanel = () => {
   return (
     <div className = "container w-50 mt-2">
       <Accordion>
-        {/* <Card>
+        <Card>
           <Accordion.Toggle as={Card.Header} eventKey="1">
-            Filter
+            Filters
           </Accordion.Toggle>
           <Accordion.Collapse eventKey="1">
             <Card.Body>
-              <IndicatorForm />
+              <ScannerFilterForm />
             </Card.Body>
           </Accordion.Collapse>
-        </Card> */}
+        </Card>
         <Card>
           <Accordion.Toggle as={Card.Header} eventKey="0">
             Add Column
