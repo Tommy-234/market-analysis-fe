@@ -11,9 +11,10 @@ export type TableColumn = {
 type DataTableProps = {
   tableData: any[];
   dataFields: string[];
+  onRowClick?: ( event, row, rowIndex ) => void;
 };
 
-export const DataTable: FC<DataTableProps> = ({ tableData, dataFields }) => (
+export const DataTable: FC<DataTableProps> = ({ tableData, dataFields, onRowClick }) => (
   <BootstrapTable
     keyField='symbol'
     columns={map(dataFields, field => ({
@@ -25,5 +26,8 @@ export const DataTable: FC<DataTableProps> = ({ tableData, dataFields }) => (
       }
     }))}
     data={tableData}
+    {...onRowClick && {
+      rowEvents: { onClick: onRowClick }
+    }}
   />
 );

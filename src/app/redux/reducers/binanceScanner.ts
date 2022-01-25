@@ -1,4 +1,4 @@
-import { filter } from 'lodash';
+import { reduce, filter, get } from 'lodash';
 import { Info24Hour, Operator } from '@tommy_234/live-data';
 import { DefualtScannerColumns } from '../../common';
 
@@ -19,6 +19,13 @@ export type BinanceScannerState = {
   filters?: Filter[];
 }
 
+const applyFilter = (BTCpair: Info24Hour, filter: Filter) => {
+  const value = get(BTCpair, filter.field);
+  return filter.operator === Operator.GREATER_THAN ?
+    (value > filter.target ? true : false) :
+    (value < filter.target ? true : false);
+};
+
 export const binanceScanner = ( 
   state: BinanceScannerState = {
     btcPairs: {
@@ -28,18 +35,21 @@ export const binanceScanner = (
     tableData: [],
     columns: DefualtScannerColumns
   },
-  action
+  action: {
+    type: string;
+    data: any;
+  }
 ) => {
   switch(action.type) {
-    case 'BINANCE_SCANNER_TABLE_DATA':
+    case 'BINANCE_SCANNER_FILTERS_APPLY':
       return {
         ...state,
-        tableData: action.data as Info24Hour[]
-      }
-    case 'BINANCE_SCANNER_FILTERS':
-      return {
-        ...state,
-        filters: action.data as Filter[]
+        tableData: reduce(
+          action.data as Filter[],
+          (result, scannerFilter) => 
+            filter(result, BTCpair => applyFilter(BTCpair, scannerFilter) ),
+          state.btcPairs.data
+        )
       }
     case 'BINANCE_SCANNER_COLUMNS_ADD':
       return {

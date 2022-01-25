@@ -1,34 +1,16 @@
 import { Dispatch } from 'redux';
-import { reduce, filter, get } from 'lodash';
-import { BinanceAnalysis, Info24Hour, Operator } from '@tommy_234/live-data';
+import { BinanceAnalysis } from '@tommy_234/live-data';
 import { Filter } from '../reducers/binanceScanner';
-
-const applyFilter = (BTCpair: Info24Hour, filter: Filter) => {
-  const value = get(BTCpair, filter.field);
-  return filter.operator === Operator.GREATER_THAN ?
-    (value > filter.target ? true : false) :
-    (value < filter.target ? true : false);
-};
 
 export const scannerFilterApply = (
   values: { filters: Filter[] }
 ) => (
-  dispatch: Dispatch,
-  getState: () => any
-) => {
-  const BTCpairs = getState().binanceScanner.btcPairs.data as Info24Hour[];
-  const filtered = reduce(
-    values.filters,
-    (result, scannerFilter) => 
-      filter(result, BTCpair => applyFilter(BTCpair, scannerFilter) ),
-    BTCpairs
-  );
-
+  dispatch: Dispatch
+) =>
   dispatch({
-    type: 'BINANCE_SCANNER_TABLE_DATA',
-    data: filtered
+    type: 'BINANCE_SCANNER_FILTERS_APPLY',
+    data: values.filters
   });
-};
 
 export const addScannerColumn = (
   values: { column: string }
