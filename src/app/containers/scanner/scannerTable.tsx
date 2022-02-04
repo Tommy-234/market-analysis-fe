@@ -1,55 +1,31 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Modal } from 'react-bootstrap';
-import { createChart, PriceFormat } from 'lightweight-charts';
-import { isEmpty, endsWith, last } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import { IntervalType } from '@tommy_234/live-data';
-import { useActions, BTChistoryData } from '../../redux';
-import { ChartCandle, countDecimals, DollarPriceFormat } from '../../common';
-import { DataTable } from '../../components';
+import { useActions, BTChistoryData, clearHistory } from '../../redux';
+import { DataTable, CandleChart } from '../../components';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-const getPriceFormat = ( symbol: string, candle: ChartCandle ): PriceFormat => {
-  if (endsWith(symbol, 'BTC')) {
-    const precision = countDecimals(candle.close);
-    return {
-      type: 'price',
-      precision,
-      minMove: (1 / Math.pow(10, precision))
-    }
-  } else {
-    return DollarPriceFormat
-  }
-}
 
 export const ScannerTable = () => {
   const [showChart, setShowChart] = useState('');
-  const actions = useActions({ BTChistoryData });
-  const chartRef = useRef<HTMLDivElement>();
+  const actions = useActions({ BTChistoryData, clearHistory });
   
-  const { tableData, fields, modalData } = useSelector( (store: any) => ({
+  // second parameter 'isEqual' is to prevent rendering on every websocket message.
+  const { tableData, fields, historyData } = useSelector( (store: any) => ({
     tableData: store.binanceScanner.tableData,
     fields: store.binanceScanner.columns,
-    modalData: store.modalChart.chartData
-  }));
+    historyData: store.modalChart.historyData.data
+  }), isEqual);
 
   useEffect( () => {
     !isEmpty(showChart) && actions.BTChistoryData(showChart, IntervalType.Hour1);
-  }, [showChart])
+  }, [showChart]);
 
-  useEffect( () => {
-    if (chartRef.current && !isEmpty(modalData)) {
-      const chart = createChart(chartRef.current, {
-        width: 600,
-        height: 300
-      });
-      const candleSeries = chart.addCandlestickSeries({
-        priceFormat: getPriceFormat(showChart, last(modalData))
-      });
-      chart.timeScale().applyOptions({ timeVisible: true });
-      candleSeries.setData(modalData);
-    }
-  }, [modalData])
+  const closeModal = () => {
+    setShowChart('');
+    actions.clearHistory();
+  }
   
   return (
     <div className="container">
@@ -58,12 +34,23 @@ export const ScannerTable = () => {
         tableData={tableData}
         onRowClick={ ( _, row ) => setShowChart(row.symbol) }
       />
-      <Modal show={!isEmpty(showChart)} onHide={ () => setShowChart('') }>
+      <Modal show={!isEmpty(showChart)} onHide={closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>{showChart}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div ref={chartRef} />
+          <CandleChart
+            symbol={showChart}
+            data={historyData}
+            lineSeries={[{
+              count: 50,
+              options: {
+                color: 'blue',
+                lineWidth: 1
+              }
+            }]}
+            volume={true}
+          />
         </Modal.Body>
       </Modal>
     </div>

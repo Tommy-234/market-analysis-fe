@@ -1,6 +1,12 @@
 import { Dispatch } from 'redux';
 import { BinanceAnalysis, IntervalType } from '@tommy_234/live-data';
 
+export const clearHistory = () => (
+  dispatch: Dispatch
+) => {
+  dispatch({ type: 'BINANCE_HISTORY_CLEAR' })
+}
+
 export const BTChistoryData = ( symbol: string, interval: IntervalType ) => async (
   dispatch: Dispatch,
   getState: () => any

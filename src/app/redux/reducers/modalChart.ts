@@ -1,16 +1,4 @@
 import { Candle } from '@tommy_234/live-data';
-import { UTCTimestamp } from "lightweight-charts";
-import { map } from 'lodash';
-import { ChartCandle, removeMillisec } from '../../common';
-
-const candleMapper = ( candles: Candle[] ): ChartCandle[] =>
-  map(candles, candle => ({
-    time: removeMillisec(candle.openTime) as UTCTimestamp,
-    open: candle.open,
-    high: candle.high,
-    low: candle.low,
-    close: candle.close
-  }));
 
 export type ModalChartState = {
   historyData: {
@@ -18,7 +6,6 @@ export type ModalChartState = {
     inProgress: boolean;
     error?: any;
   };
-  chartData: ChartCandle[]
 }
 
 export const modalChart = ( 
@@ -26,8 +13,7 @@ export const modalChart = (
     historyData: {
       data: [],
       inProgress: false
-    },
-    chartData: []
+    }
   },
   action: {
     type: string;
@@ -35,6 +21,13 @@ export const modalChart = (
   }
 ) => {
   switch(action.type) {
+    case 'BINANCE_HISTORY_CLEAR':
+      return {
+        historyData: {
+          data: [],
+          inProgress: false
+        }
+      }
     case 'BINANCE_HISTORY_START':
       return {
         historyData: {
@@ -43,13 +36,11 @@ export const modalChart = (
         }
       }
     case 'BINANCE_HISTORY':
-      const candles = action.data as Candle[]
       return {
         historyData: {
           inProgress: false,
-          data: candles
-        },
-        chartData: candleMapper(candles)
+          data: action.data as Candle[]
+        }
       }
     case 'BINANCE_HISTORY_ERROR':
       return {

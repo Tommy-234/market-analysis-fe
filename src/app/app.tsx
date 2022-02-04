@@ -8,6 +8,11 @@ export const App = () => {
   const actions = useActions({ initBinance, BTCtickersInfo });
 
   useEffect(() => {
+    // I think by calling initBinance() from here, it is causing Scanner to rerender on every websocket message
+    // May need to separate initBinance() -
+    //    initBinanceApiClient() - run in here
+    //    initBinanceStream() - run in WatchList
+    //    BTCtickersInfo() - would then be run from Scanner
     actions.initBinance();
     actions.BTCtickersInfo();
   }, []);
