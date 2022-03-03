@@ -1,6 +1,6 @@
 export const BinanceConfig = {
   apiConfig: {
-    endpoint: '/api/binance',
+    endpoint: 'https://api.binance.com/api',
     apiKey: '',
     secretKey: ''
   },

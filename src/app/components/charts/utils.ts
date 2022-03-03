@@ -34,7 +34,8 @@ export const mapSeriesVolume = (data: Candle[]) =>
     data,
     candle => ({
       time: removeMillisec(candle.openTime) as UTCTimestamp,
-      value: candle.volume
+      value: candle.volume,
+      color: candle.close >= candle.open ? '#26a69a' : '#ef5350'
     })
   );
 
@@ -58,7 +59,7 @@ export const mapSeriesCandles = ( candles: Candle[] ): ChartCandle[] =>
 //     (candle, mapIndex) => ({
 //       time: candle.time,
 //       value: reduce(
-//         slice(data, mapIndex, mapIndex + count - 1),
+//         slice(data, mapIndex, mapIndex + count),
 //         (result, c) => result + c.close,
 //         0
 //       )
