@@ -3,4 +3,3 @@ export * from './user';
 export * from './binance';
 export * from './binanceScanner';
 export * from './notifications';
-export * from './modalChart';
