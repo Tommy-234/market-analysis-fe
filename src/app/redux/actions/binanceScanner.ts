@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux';
-import { BinanceAnalysis } from '@tommy_234/live-data';
+import { BinanceApiClient } from '@tommy_234/live-data';
 import { Filter } from '../reducers/binanceScanner';
+import { BinanceConfig } from '../../common';
 
 export const scannerFilterApply = (
   values: { filters: Filter[] }
@@ -36,12 +37,11 @@ export const addRemoveScannerColumn = (
   });
 
 export const BTCtickersInfo = () => async (
-  dispatch: Dispatch,
-  getState: () => any
+  dispatch: Dispatch
 ) => {
   dispatch({ type: 'BINANCE_BTC_PAIRS_START' });
-  const binanceAnalysis: BinanceAnalysis = getState().binance.manager;
-  binanceAnalysis.apiClient.bitcoinPairings()
+  const apiClient = new BinanceApiClient(BinanceConfig.apiConfig);
+  apiClient.bitcoinPairings()
     .then( (data) => dispatch({
       type: 'BINANCE_BTC_PAIRS',
       data
